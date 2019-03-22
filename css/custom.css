@@ -1,0 +1,9 @@
+.timeline-item.warning:before{
+    border: 3px solid var(--warning);
+}
+.dataTable.clickable tbody tr{
+    cursor: pointer;
+}
+.dataTable tbody tr:hover{
+    background-color: #EEE;
+}
