@@ -70,7 +70,8 @@
         "title": "สมชาย เมิมขุนทด",
         "muntype": "ห้วยบง90",
         "soiltype": "ดินเหนียว",
-        "area": 17.86
+        "area": 17.86,
+        "odmtaskid": "aa269c36-f5df-4faa-a3e5-26af61450f80"
     },{
         "location": [
             {"lat": 15.212777, "lng": 101.443326},

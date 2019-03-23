@@ -2,10 +2,35 @@ rai_data = [];
 
 $(async function() {
     rai_data = await $.getJSON("./db/location.json",(js)=>{return js;});
-    initMaps();
+    initEvents();
+    //initMaps();
     //Reference: https://datatables.net/
     initTable();
 });
+
+function initEvents(){
+    $("#btn_openDronePic").on("click",function(){
+        id = $(this).data("dronepic");
+        lnk = '<iframe scrolling="no" title="WebODM" width="100%" height="100%" frameBorder="0" src="http://35.247.137.70:8000/public/task/'+id+'/iframe/map/"></iframe>'
+        if($("#hybrid_map").is(":visible")){
+            $("#hybrid_map").fadeOut('fast',()=>{
+                $("#aerial_iframe").fadeIn('fast');
+                $("#aerial_iframe").html(lnk);
+            });
+            $(this).html("แสดงแผนที่");
+        }else{
+            $("#aerial_iframe").fadeOut('fast',()=>{
+                $("#hybrid_map").fadeIn('fast');
+            });
+            $(this).html("ดูภาพถ่ายทางอากาศ");
+        }
+    });
+    $("#btn_mapSetCenter").on("click",()=>{
+        if($("#hybrid_map").is(":visible")){
+            $("#hybrid_map").data("googleMap").setCenter();
+        }
+    });
+}
 
 async function initTable(){
     $("#rai_datatable").html("");
@@ -84,7 +109,8 @@ async function initMaps(){
         zoomControl: true
     });
     */
-    let map = $("#hybrid_map").googleMap({
+    let map = $("#hybrid_map").googleMap();
+    map.initialize({
         zoom: 11,
         center: {"lat": start_lat, "lng": start_lng},
         mapTypeId: google.maps.MapTypeId.HYBRID,
@@ -92,7 +118,6 @@ async function initMaps(){
         fullscreenControl: true,
         zoomControl: true
     });
-    map.initialize();
     $.each(rai_location,(idx,val) => {
         map.addPolygon({
             paths: val.location,
@@ -122,19 +147,24 @@ function selectItem(id){
     });
     rai_detail = rai_detail[0];
     //Map operations
+    if($("#hybrid_map").is(":hidden")){
+        $("#aerial_iframe").fadeOut('fast',()=>{
+            $("#hybrid_map").fadeIn('fast');
+        });
+    }
     let map = $("#hybrid_map");
     let marker = $.grep($("#hybrid_map").data("markers"),(ele,i)=>{
         return ele.label==id.toString();
     });
     marker = marker[0];
     map.data("map").setZoom(15);
-    //map.data("map").setCenter(marker.getPosition());
     map.data("map").panTo(marker.getPosition());
     //Data table operations
     $("#datatables-clients tbody tr").removeClass("selected");
     $('#datatables-clients tbody tr[data-raiid="'+id+'"]').addClass('selected');
     initDetailTable(id);
     $("#btn_openDronePic").removeAttr("disabled");
+    $("#btn_openDronePic").attr("data-dronepic",rai_detail.odmtaskid);
     /*
     let infoWindow = new google.maps.InfoWindow;
     let content = rai_detail.title;

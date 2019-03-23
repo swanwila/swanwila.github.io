@@ -59,13 +59,13 @@ async function initMaps(){
     });
     start_lat /= rai_location.length;
     start_lng /= rai_location.length;
-    let map = $("#hybrid_map").googleMap({
+    let map = $("#hybrid_map").googleMap();
+    map.initialize({
         zoom: 11,
         center: {"lat": start_lat, "lng": start_lng},
         mapTypeId: google.maps.MapTypeId.HYBRID,
         disableDefaultUI: true
     });
-    map.initialize();
     $.each(rai_location,(idx,val) => {
         map.addPolygon({
             paths: val.location,

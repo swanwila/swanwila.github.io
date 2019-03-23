@@ -1,31 +1,37 @@
 $.fn.googleMap = function(options) {
-    let _this = this;
     let settings = options;
     let markers = [];
     let polygons = [];
+    let centroid;
 
     this.initialize = ()=>{
-        let map = new google.maps.Map(_this.get(0), settings);
-        _this.data('map', map);
-        return _this;
+        let map = new google.maps.Map(this.get(0), settings);
+        this.data('map', map);
+        centroid = settings.center;
+        return this;
     };
     this.addPolygon = (options)=>{
-        map = _this.data("map");
+        map = this.data("map");
         let polygon = new google.maps.Polygon(options);
         polygon.setMap(map);
         polygons.push(polygon);
-        _this.data('polygons', polygons);
+        this.data('polygons', polygons);
         return polygon;
     }
     this.addMarker = (options)=>{
         let setting = $.extend({},{
-            map: _this.data("map")
+            map: this.data("map")
         }, options);
         let marker = new google.maps.Marker(setting);
         markers.push(marker);
-        _this.data('markers', markers);
+        this.data('markers', markers);
         return marker;
     };
+    this.setCenter = ()=>{
+        map = this.data("map");
+        map.setZoom(11);
+        map.panTo(centroid);
+    }
 
     return this;
 };
